@@ -3,6 +3,7 @@ package com.revature.eval.java.core;
 
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -391,6 +392,8 @@ public class EvaluationService {
 	 * @return
 	 */
 	public List<Long> calculatePrimeFactorsOf(long l) {
+		//Long = 0;
+		List<Long> factor = new ArrayList<Long>();
 		
 		return null;
 	}
@@ -504,13 +507,27 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String encode(String string) {
+			string = string.toLowerCase();
 			String alphabet = "abcdefghijklmnopqrstuvwxyz";
-			String backAlpha = "zyxwvutsrqponmlkjihgfedcba";
+		    String backAlpha = "zyxwvutsrqponmlkjihgfedcba";
+			String[] backArr = backAlpha.split("");
 			String[] letter = string.split("");
 			String str = "";
-			for (int i=0;i<string.length();i++) {
-				str = str + backAlpha.indexOf(alphabet.indexOf(letter[i]));
+		if(!string.contains(" ")) {
+			for (int i=0;i<letter.length;i++) {
+				int index = alphabet.indexOf(letter[i]);
+				str = str + backArr[index];
+			}	
+		} else {
+			String[] words = string.split(" ");
+			for (int i=0;i<=words.length;i++) {
+				for (int j=0;j<letter.length;i++) {
+					int index = alphabet.indexOf(letter[j]);
+					str = str + backArr[index];
+				}
+				
 			}
+		}
 			return str;
 		}
 
@@ -521,8 +538,20 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String decode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			string = string.replaceAll(" ", "");
+			string = string.toLowerCase();
+			String alphabet = "abcdefghijklmnopqrstuvwxyz";
+		    String backAlpha = "zyxwvutsrqponmlkjihgfedcba";
+			String[] alphArr = alphabet.split("");
+			String[] letter = string.split("");
+			String str = "";
+			
+			for (int i=0;i<letter.length;i++) {
+				int index = backAlpha.indexOf(letter[i]);
+				str = str + alphArr[index];
+			}
+			
+			return str;
 		}
 	}
 
@@ -617,7 +646,7 @@ public class EvaluationService {
 	 * @return
 	 */
 	public Temporal getGigasecondDate(Temporal given) {
-		// TODO Write an implementation for this method declaration
+		
 		return null;
 	}
 
