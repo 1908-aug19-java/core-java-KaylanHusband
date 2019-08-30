@@ -1,0 +1,132 @@
+--Chinook Assignment Solutions
+
+--Queries and DML
+--2.1 SELECT
+--a.) Select all records from the Employee table.
+--select * from "Employee";
+--b.) Select all records from the Employee table where last name is King.
+--select * from "Employee" where "LastName" like 'King';
+--c.) Select all albums in Album table and sort result set in descending order by title.
+--select * from "Album" order by "Title" desc;
+--d.) Select first name from Customer and sort result set in ascending order by city.
+--select "FirstName", "City" from "Customer" order by "City";
+--e.) Select all invoices with a billing address like “T%”.
+--select * from "Invoice" where "BillingAddress" like 'T%'; 
+--f.) Select the name of the longest track.
+--select "Name","Milliseconds" from "Track" order by "Milliseconds" desc limit 1;
+--g.) Find the average invoice total.
+--select trunc(avg("Total"),2) from "Invoice";
+--h.) Find the total number of employees in each position
+--select count("EmployeeId") from "Employee";
+
+--2.2 Insert Into
+--a.) Insert two new records into Genre table
+--select * from "Genre";
+--Entry 1
+--insert into "Genre"("GenreId","Name") values (26,'Chill Hop');
+--Entry 2
+--insert into "Genre"("GenreId","Name") values (27,'Podcasts');
+--b.) Insert two new records into Employee table
+--Entry 1
+--insert into "Employee"("EmployeeId","LastName","FirstName","Title","ReportsTo","BirthDate","HireDate", "Address","City", "State", "Country", "PostalCode", "Phone", "Fax", "Email")
+--values (9,'Joseph','Gregory','IT Manager',1,'1980/12/06','2005/08/15','7840 Brickhouse Rd','Lethbridge','AB','Canada','T1H 1Y8','+1 (403) 567-9823','+1 (403) 567-6934','gregory@chinookcorp.com');
+--Entry 2
+--update "Employee" set "Title" = 'CEO' where "EmployeeId" = 10;
+--insert into "Employee"("EmployeeId","LastName","FirstName","Title","ReportsTo","BirthDate","HireDate", "Address","City", "State", "Country", "PostalCode", "Phone", "Fax", "Email")
+--values (10,'Husband','Kaylan','CEO',null,'1997/06/05','2017/07/23','11347 Mansion Steet N','Edmonton','AB','Canada','T5K 2N1','+1 (780) 496-2014','+1 (780) 496-3014','kaylan@chinookcorp.com');
+--c.) Insert two new records into Customer table
+--Entry 1
+--insert into "Customer"("CustomerId","FirstName","LastName","Company","Address","City","State","Country","PostalCode","Phone","Fax","Email","SupportRepId")
+--values(60,'John','Doe',null,'PO Box 3456','Herndon','VA', 'USA', '20190','+1 (595) 893-9762', null, 'John@email.com',5)
+--Entry 2
+--insert into "Customer"("CustomerId","FirstName","LastName","Company","Address","City","State","Country","PostalCode","Phone","Fax","Email","SupportRepId")
+--values(61,'Kaylan','Husband','Revature','PO Box 11365','Herndon','VA', 'USA', '20190','+1 (595) 893-9762', null, 'Kaylan@email.com',1)
+
+--2.3 Update
+--a.) Update Aaron Mitchell in Customer table to Robert Walter
+--update "Customer" set "FirstName" = 'Robert' where "CustomerId" = 32;
+--update "Customer" set "LastName" = 'Walter' where "CustomerId" = 32;
+--b.) Update name of artist in the Artist table “Creedence Clearwater Revival” to “CCR”
+--update "Artist" set "Name" = 'CCR' where "ArtistId" = 76;
+
+--3.0 Joins
+--3.1 Inner
+--a.) Create an inner join that joins customers and orders and specifies the name of the customer and the invoiceId.
+--select I."InvoiceId",C."FirstName",C."LastName" from "Customer" as C
+--inner join "Invoice" as I on I."CustomerId" = C."CustomerId";
+--3.2 Outer
+--a.) Create an outer join that joins the customer and invoice table, specifying the CustomerId, firstname, lastname, invoiceId, and total.
+--select C."CustomerId", C."FirstName",C."LastName",I."InvoiceId",I."Total" from "Customer" as C
+--full outer join "Invoice" as I on c."CustomerId" = i."CustomerId";
+--3.3 Right
+--a.) Create a right join that joins album and artist specifying artist name and title.
+--select a2."Name", a."Title" from "Album" as a right join "Artist" as a2 on a."ArtistId" = a2."ArtistId";
+--3.4 Cross Join 
+--a.) Create a cross join that joins album and artist and sorts by artist name in ascending order.
+--select a."Name",a2."Title" from "Artist" as a cross join "Album" as a2 order by a."Name";
+--3.5 Self Join
+--a.) Perform a self-join on the employee table, joining on the reportsto column.
+--select e1."EmployeeId",e1."FirstName",e1."LastName",e1."Title",e1."ReportsTo" from "Employee" as e1,"Employee" as e2 where e1."ReportsTo" = e2."EmployeeId" order by "EmployeeId";
+
+--3.6 Joined Queries
+--a.) Create a query that shows the customer first name and last name as FULL_NAME
+-- (you can use || to concatenate two strings) with the total amount of money they have spent as TOTAL.
+--select (c."FirstName"||' '||"LastName") as "FULL_NAME", i."Total" as "TOTAL" from "Customer" as c 
+--left join "Invoice" as i on c."CustomerId" = i."CustomerId" order by "FirstName";
+--*b.) Create a query that shows the employee that has made the highest total value of sales (total of all invoices).
+--select i."InvoiceId",i."CustomerId", c."SupportRepId", i."Total" 
+--from "Invoice" as i 
+--left join "Customer" as c on i."InvoiceId" = c."CustomerId" order by "CustomerId";
+--*c.) Create a query which shows the number of purchases per each genre.
+--    Display the name of each genre and number of purchases. Show the most popular genre first.
+--select * from "Invoice";
+
+-- 4.0 User Defined Functions
+--a.) Create a function that returns the average total of all invoices.
+--create function avInv() 
+--returns numeric(9,2) 
+--language plpgsql
+--as $AvTot$
+--	declare avgInv numeric(9,2);
+--begin 
+--	select avg("Total") into avginv from "Invoice";
+--	return avgInv;
+--end;
+--$AvTot$
+--select avInv();
+
+--b.) Create a function that returns all employees who are born after 1968.
+--create function birthRange()
+--returns setof timestamp
+--language plpgsql
+--as $$
+--	declare datecheck timestamp;
+--begin
+-- return query select "BirthDate" from "Employee" where "BirthDate" > '1968-12-31';
+--end;
+--$$
+--select birthRange();
+
+--c.) Create a function that returns the manager of an employee, given the id of the employee.
+--create function getManager(inputemp_id "Employee.EmployeeId"%type)
+--returns numeric
+--language plpgsql as $$
+--	declare 
+--	empId "Employee.EmployeeId"%type;
+--	managerNum "Employee.ReportsTo"%type;
+--begin
+--	select "EmployeeId" into empId 
+--	from "Employee"
+--	where empId = inputemp_Id;
+--
+--	select "ReportsTo" into managerNum
+--	from "Employee"
+--	where empId = managerNum;
+--	return managerNum;
+--end;
+--$$
+
+--d.) Create a function that returns the price of a particular playlist, given the id for that playlist.
+
+
+
